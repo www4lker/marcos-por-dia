@@ -1,0 +1,1239 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<!-- Gerado por scripts/build.mjs a partir de src/. Não editar index.html à mão. -->
+<title>Marcos por dia</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Três camadas: categorias → hábitos → hábito. Uma tela por vez, pouco texto à vista,
+   teoria sempre recolhida. O número de dias é a única coisa grande da página. */
+:root {
+  --bg: #f4f5f6;
+  --ink: #1b2230;
+  --ink2: #4c5666;
+  --ink3: #6b7585;
+  --rule: #dde1e6;
+  --signal: #b3410d;
+  --soft: #ebedf0;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #13161b; --ink: #e6e9ee; --ink2: #a7afbb; --ink3: #8b94a3; --rule: #262b33; --signal: #f08a52; --soft: #1c2027; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #13161b; --ink: #e6e9ee; --ink2: #a7afbb; --ink3: #8b94a3; --rule: #262b33; --signal: #f08a52; --soft: #1c2027; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.5; margin: 0;
+  padding: calc(18px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(48px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+main { max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+h1, h2 { margin: 0; font-weight: 500; text-wrap: balance; }
+h1 { font-size: 22px; }
+p { margin: 0; }
+a { color: inherit; }
+button, input, summary { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; }
+.label { font-family: var(--mono); font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--ink3); }
+.muted { color: var(--ink2); font-size: 14px; }
+.small { color: var(--ink3); font-size: 13px; }
+
+.back { align-self: flex-start; display: inline-flex; align-items: center; min-height: 44px; padding-right: 12px;
+  text-decoration: none; color: var(--ink3); font-size: 14px; }
+
+/* listas de navegação (camadas 1 e 2) */
+.list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+.list a { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 64px; padding: 10px 2px;
+  border-bottom: 1px solid var(--rule); text-decoration: none; }
+.list a:hover { background: var(--soft); }
+.list .name { font-size: 18px; }
+.list .sub { display: block; font-size: 13px; color: var(--ink3); }
+.list .n { font-family: var(--mono); font-size: 20px; font-weight: 500; font-variant-numeric: tabular-nums; color: var(--ink2); white-space: nowrap; }
+.list .n.zero { color: var(--ink3); }
+.chev { color: var(--ink3); margin-left: 4px; }
+.list .n .u { font-size: 12px; margin-left: 3px; color: var(--ink3); }
+
+/* camada 3 */
+.count { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 0 4px; }
+.count .big { font-family: var(--mono); font-size: 72px; font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums; }
+.count .unit { font-size: 14px; color: var(--ink2); }
+.band { border-left: 2px solid var(--signal); padding: 2px 0 2px 12px; }
+.band .t { font-size: 18px; }
+
+.note { background: var(--soft); padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; }
+.note.mark { border-left: 2px solid var(--signal); }
+.row-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn { min-height: 44px; padding: 0 16px; border: 1px solid var(--ink3); background: transparent; cursor: pointer; font-size: 15px; }
+.btn:hover { background: var(--soft); }
+.btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.btn.quiet { border-color: var(--rule); color: var(--ink2); }
+.btn.danger { border-color: var(--signal); color: var(--signal); }
+
+details { border-top: 1px solid var(--rule); }
+details:last-of-type { border-bottom: 1px solid var(--rule); }
+summary { cursor: pointer; min-height: 48px; display: flex; align-items: center; color: var(--ink2); font-size: 15px; list-style: none; }
+summary::-webkit-details-marker { display: none; }
+summary::before { content: "+"; font-family: var(--mono); width: 22px; color: var(--ink3); }
+details[open] > summary::before { content: "−"; }
+.inside { padding: 0 0 16px 22px; display: flex; flex-direction: column; gap: 10px; font-size: 14.5px; }
+.items { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.items li { display: flex; flex-direction: column; gap: 2px; }
+.tag { font-family: var(--mono); font-size: 10.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--ink3); }
+.tag.e { color: var(--ink); }
+.all { display: flex; flex-direction: column; }
+.all div { display: grid; grid-template-columns: 58px minmax(0, 1fr); gap: 8px; padding: 5px 0; color: var(--ink2); }
+.all .r { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.all .cur { color: var(--ink); }
+.all .cur .r { color: var(--signal); }
+.empty { color: var(--ink3); font-style: italic; }
+
+.stepper { display: inline-flex; border: 1px solid var(--ink3); align-self: flex-start; }
+.stepper button { width: 48px; min-height: 48px; border: none; background: transparent; font-family: var(--mono); font-size: 20px; cursor: pointer; }
+.stepper input { width: 72px; border: none; border-inline: 1px solid var(--ink3); background: transparent; text-align: center;
+  font-family: var(--mono); font-size: 20px; font-variant-numeric: tabular-nums; -moz-appearance: textfield; }
+.stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+.hist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.hist li { display: flex; justify-content: space-between; gap: 12px; color: var(--ink2); }
+.hist .d { font-family: var(--mono); font-variant-numeric: tabular-nums; color: var(--ink); }
+select, input[type="date"] { font: inherit; font-size: 14px; padding: 8px; background: transparent; color: var(--ink); border: 1px solid var(--rule); }
+textarea { width: 100%; min-height: 140px; font-family: var(--mono); font-size: 12px; background: transparent; color: var(--ink); border: 1px solid var(--rule); }
+</style>
+</head>
+<body>
+<main id="app" aria-live="polite"></main>
+
+<script>
+(function () {
+  const F = { e: "Firme", p: "Plausível", i: "Varia" };
+  const INF = 9999;
+  const HABITS = [
+    {
+      "id": "cafe",
+      "nome": "Café",
+      "crit": "Dia com meia dose ou menos",
+      "obs": "A cronologia de abstinência vale para cada redução. Se a dose desce de novo, abre-se outra janela, menor que a primeira.",
+      "faixas": [
+        {
+          "a": 1,
+          "b": 3,
+          "t": "Pico da abstinência",
+          "it": [
+            {
+              "id": "cafe-1-1",
+              "grau": "e",
+              "texto": "Na parada total, os sintomas começam 12–24 h depois e costumam atingir o máximo entre 20 e 51 h. Com meia dose, tendem a ser mais brandos ou nem aparecer."
+            },
+            {
+              "id": "cafe-1-2",
+              "grau": "e",
+              "texto": "Dor de cabeça, cansaço, sonolência, dificuldade de concentração, irritabilidade e sensação de névoa são os mais comuns."
+            },
+            {
+              "id": "cafe-1-4",
+              "grau": "p",
+              "texto": "Reduzir aos poucos tende a suavizá-los, e saber que a dose caiu aumenta o desconforto."
+            },
+            {
+              "id": "cafe-1-3",
+              "grau": "p",
+              "texto": "Dor forte justifica segurar a dose atual por mais alguns dias antes de reduzir de novo."
+            }
+          ]
+        },
+        {
+          "a": 4,
+          "b": 9,
+          "t": "Fim da fase aguda",
+          "it": [
+            {
+              "id": "cafe-2-1",
+              "grau": "e",
+              "texto": "Na parada total, os sintomas costumam durar de 2 a 9 dias."
+            },
+            {
+              "id": "cafe-2-2",
+              "grau": "p",
+              "texto": "A sonolência do começo da tarde ainda pode aparecer: é a adenosina acumulada, sem o bloqueio da cafeína."
+            },
+            {
+              "id": "cafe-2-3",
+              "grau": "p",
+              "texto": "A pergunta recorrente “por que não estou tomando café?” é em boa parte gatilho (hora, lugar, estudo), não necessidade física."
+            }
+          ]
+        },
+        {
+          "a": 10,
+          "b": 14,
+          "t": "Tolerância em queda",
+          "it": [
+            {
+              "id": "cafe-3-1",
+              "grau": "p",
+              "texto": "Estudos, sobretudo em animais, sugerem que o uso crônico aumenta receptores de adenosina; quanto tempo levam para se reajustar em humanos não está estabelecido."
+            },
+            {
+              "id": "cafe-3-2",
+              "grau": "p",
+              "texto": "A sensibilidade a doses pequenas aumenta: a meia dose passa a render mais do que rendia."
+            }
+          ]
+        },
+        {
+          "a": 15,
+          "b": 28,
+          "t": "Tolerância baixa instalada",
+          "it": [
+            {
+              "id": "cafe-4-1",
+              "grau": "p",
+              "texto": "Passada a abstinência física, o que resta é hábito, ritual e expectativa."
+            },
+            {
+              "id": "cafe-4-2",
+              "grau": "p",
+              "texto": "Melhora do sono profundo e do estômago é plausível, mas depende de outros fatores além do café."
+            },
+            {
+              "id": "cafe-4-3",
+              "grau": "i",
+              "texto": "Uma xícara cheia depois de semanas assim costuma ter efeito exagerado (relato de Pollan, coerente com a tolerância baixa)."
+            },
+            {
+              "id": "cafe-4-4",
+              "grau": "i",
+              "texto": "Faixa de risco para exceções racionalizadas (“semana estressante”). Regra de exceção definida antes, por escrito, pesa mais do que decidida na hora."
+            }
+          ]
+        },
+        {
+          "a": 29,
+          "b": 66,
+          "t": "Novo patamar",
+          "it": [
+            {
+              "id": "cafe-5-1",
+              "grau": "e",
+              "texto": "No estudo de Lally, a mediana até o hábito ficar automático foi de 66 dias (de 18 a 254). Uma revisão de 2024 com 20 estudos achou medianas de 59–66 dias e diferenças individuais de 4 a 335."
+            },
+            {
+              "id": "cafe-5-2",
+              "grau": "i",
+              "texto": "Dose pequena ou esporádica tende a se manter estável enquanto a regra não é reaberta."
+            }
+          ]
+        },
+        {
+          "a": 67,
+          "b": 9999,
+          "t": "Consolidação",
+          "it": [
+            {
+              "id": "cafe-6-1",
+              "grau": "p",
+              "texto": "Falhar um dia não afetou de forma relevante a formação do hábito no estudo de Lally; quanta regularidade é necessária ainda não está claro."
+            },
+            {
+              "id": "cafe-6-2",
+              "grau": "i",
+              "texto": "O café vira evento escolhido, não linha de base."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "med",
+      "nome": "Meditação",
+      "crit": "Sentou 25 minutos",
+      "obs": "O básico é 25 minutos. A faixa lê só a continuidade do hábito. O piso para dias difíceis (respiração de 5 minutos, sem zerar) ainda não está na página.",
+      "faixas": [
+        {
+          "a": 1,
+          "b": 3,
+          "t": "Instalando o gatilho",
+          "it": [
+            {
+              "id": "med-1-1",
+              "grau": "p",
+              "texto": "O objetivo é associar horário e lugar ao ato de sentar, não meditar bem."
+            },
+            {
+              "id": "med-1-2",
+              "grau": "p",
+              "texto": "Sonolência, agitação e dispersão são esperadas e não indicam falha."
+            }
+          ]
+        },
+        {
+          "a": 4,
+          "b": 7,
+          "t": "Primeira semana",
+          "it": [
+            {
+              "id": "med-2-1",
+              "grau": "i",
+              "texto": "Tédio e inquietação costumam aparecer quando a novidade cai."
+            },
+            {
+              "id": "med-2-2",
+              "grau": "p",
+              "texto": "Se o horário não funciona, trocar o gatilho, não a técnica."
+            }
+          ]
+        },
+        {
+          "a": 8,
+          "b": 14,
+          "t": "Esforço ainda alto",
+          "it": [
+            {
+              "id": "med-3-1",
+              "grau": "p",
+              "texto": "A prática ainda depende de decisão diária; em hábitos de saúde, a automaticidade costuma levar de dois a cinco meses."
+            },
+            {
+              "id": "med-3-2",
+              "grau": "p",
+              "texto": "Perder um dia não reinicia o processo."
+            }
+          ]
+        },
+        {
+          "a": 15,
+          "b": 28,
+          "t": "Fim da novidade",
+          "it": [
+            {
+              "id": "med-4-1",
+              "grau": "i",
+              "texto": "Faixa típica de queda de motivação. Aumentar o tempo de sessão nesse momento pesa mais do que parece."
+            },
+            {
+              "id": "med-4-2",
+              "grau": "p",
+              "texto": "Sensação de calma já pode aparecer. Os efeitos medidos em programas estruturados (como o de 8 semanas) são pequenos a moderados e não se medem em duas semanas."
+            }
+          ]
+        },
+        {
+          "a": 29,
+          "b": 56,
+          "t": "Rumo às oito semanas",
+          "it": [
+            {
+              "id": "med-5-1",
+              "grau": "p",
+              "texto": "Os programas estudados duram cerca de 8 semanas; é a escala em que os efeitos medidos aparecem."
+            },
+            {
+              "id": "med-5-2",
+              "grau": "i",
+              "texto": "Sessões mais longas trazem dor e tédio. Trocar de técnica no meio dificulta saber o que mudou."
+            }
+          ]
+        },
+        {
+          "a": 57,
+          "b": 9999,
+          "t": "Perto da mediana",
+          "it": [
+            {
+              "id": "med-6-1",
+              "grau": "p",
+              "texto": "Em torno de dois meses a decisão diária costuma pesar menos, com muita variação entre pessoas (de semanas a quase um ano)."
+            },
+            {
+              "id": "med-6-2",
+              "grau": "i",
+              "texto": "A qualidade da atenção muda devagar e nem sempre de forma perceptível dia a dia."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ia",
+      "nome": "IA só nas janelas",
+      "tipo": "semanal",
+      "crit": "Todo uso de IA da semana ficou nas janelas A e B, com tarefa nomeada",
+      "obs": "Do protocolo Regula (06/12/26 a 14/03/27, dois blocos de 7 semanas). Conta semanas seguidas em que todo uso de IA ficou nas janelas. A página presume que ficou; registre só a semana que não deu, sem penitência: o que derruba um protocolo é o \"já quebrei, então tanto faz\", não a quebra. Para alinhar com os blocos, comece o ciclo em 07/12/26 (segunda-feira; a página leva os semanais para a segunda): o 1º ciclo termina em 24/01/27, dia da revisão entre os blocos, e o 2º em 14/03/27, dia da decisão. A razão prompts escritos ÷ prompts usados fica no caderno.",
+      "faixas": [
+        {
+          "a": 1,
+          "b": 9999,
+          "t": "Ainda sem pesquisa sobre hábitos semanais",
+          "it": []
+        }
+      ]
+    },
+    {
+      "id": "sono",
+      "nome": "Sono",
+      "crit": "Critério a definir (ex.: acordar no mesmo horário ±30 min)",
+      "obs": "O significado da sequência depende do critério escolhido. Horário de acordar é o critério mais fácil de marcar.",
+      "faixas": [
+        {
+          "a": 1,
+          "b": 3,
+          "t": "Ancoragem do relógio",
+          "it": [
+            {
+              "id": "sono-1-1",
+              "grau": "e",
+              "texto": "Horários regulares de dormir e acordar, luz forte durante o dia (de preferência natural) e pouca luz à noite são as recomendações de consenso para manter o relógio biológico em ordem."
+            },
+            {
+              "id": "sono-1-2",
+              "grau": "p",
+              "texto": "Parte da dívida de sono se recupera nos primeiros dias; a sonolência diurna oscila."
+            }
+          ]
+        },
+        {
+          "a": 4,
+          "b": 7,
+          "t": "Regularidade começa a pesar",
+          "it": [
+            {
+              "id": "sono-2-1",
+              "grau": "p",
+              "texto": "O tempo para adormecer tende a cair com horários regulares."
+            },
+            {
+              "id": "sono-2-2",
+              "grau": "e",
+              "texto": "A meia-vida da cafeína varia muito entre pessoas, de cerca de 3 a 10 h; fumar encurta, anticoncepcional oral alonga."
+            },
+            {
+              "id": "sono-2-3",
+              "grau": "p",
+              "texto": "Em consumidores habituais, cafeína tomada só de manhã e à tarde não alterou de forma relevante a estrutura do sono num estudo controlado com homens jovens."
+            }
+          ]
+        },
+        {
+          "a": 8,
+          "b": 14,
+          "t": "Ritmo estabilizado",
+          "it": [
+            {
+              "id": "sono-3-1",
+              "grau": "p",
+              "texto": "A sonolência da tarde tende a diminuir quando o relógio estabiliza e a cafeína sai da tarde."
+            },
+            {
+              "id": "sono-3-2",
+              "grau": "i",
+              "texto": "Sonhos mais vívidos nas primeiras semanas depois de reduzir cafeína são relatados com frequência, mas não é dado firme."
+            }
+          ]
+        },
+        {
+          "a": 15,
+          "b": 28,
+          "t": "Efeito comportamental",
+          "it": [
+            {
+              "id": "sono-4-1",
+              "grau": "p",
+              "texto": "Intervenções comportamentais para sono costumam mostrar efeito em 2–6 semanas."
+            },
+            {
+              "id": "sono-4-2",
+              "grau": "p",
+              "texto": "O sono da noite anterior é das variáveis que mais pesam no humor e na vontade de café do dia seguinte."
+            }
+          ]
+        },
+        {
+          "a": 29,
+          "b": 9999,
+          "t": "Consolidação",
+          "it": [
+            {
+              "id": "sono-5-1",
+              "grau": "p",
+              "texto": "Horários regulares passam a se sustentar com menos esforço."
+            },
+            {
+              "id": "sono-5-2",
+              "grau": "p",
+              "texto": "Falhas pontuais (viagem, prazo) costumam se recuperar em duas ou três noites."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ex",
+      "nome": "Exercício",
+      "crit": "Movimento planejado (mínimo definido)",
+      "obs": "Hábitos de exercício tendem a levar mais tempo para ficar automáticos do que hábitos simples, como beber água. A revisão de 2024 fala em dois a cinco meses, como referência, não prazo.",
+      "faixas": [
+        {
+          "a": 1,
+          "b": 3,
+          "t": "Efeito agudo",
+          "it": [
+            {
+              "id": "ex-1-1",
+              "grau": "e",
+              "texto": "Uma única sessão já costuma melhorar humor e disposição no mesmo dia, sem precisar de condicionamento; o ganho de atenção e memória é pequeno."
+            },
+            {
+              "id": "ex-1-2",
+              "grau": "e",
+              "texto": "A dor muscular tardia costuma aparecer de 24 a 72 h depois de um exercício a que o corpo não está acostumado e é mais forte nos primeiros treinos; já na segunda sessão tende a ser menor."
+            }
+          ]
+        },
+        {
+          "a": 4,
+          "b": 7,
+          "t": "Primeira semana",
+          "it": [
+            {
+              "id": "ex-2-1",
+              "grau": "p",
+              "texto": "No início, boa parte do ganho de força vem de o sistema nervoso aprender a usar melhor o músculo; o crescimento muscular também começa desde o começo, só aparece mais devagar."
+            },
+            {
+              "id": "ex-2-2",
+              "grau": "p",
+              "texto": "Subir a carga depressa demais é causa comum de interrupção."
+            }
+          ]
+        },
+        {
+          "a": 8,
+          "b": 14,
+          "t": "Hábito em teste",
+          "it": [
+            {
+              "id": "ex-3-1",
+              "grau": "p",
+              "texto": "Sono e humor tendem a se beneficiar; o efeito sobre apetite varia."
+            },
+            {
+              "id": "ex-3-2",
+              "grau": "p",
+              "texto": "Caminhada em luz natural no início da tarde ajuda contra a sonolência vespertina."
+            }
+          ]
+        },
+        {
+          "a": 15,
+          "b": 28,
+          "t": "Primeiros ganhos",
+          "it": [
+            {
+              "id": "ex-4-1",
+              "grau": "p",
+              "texto": "Ganhos de força perceptíveis em 2–4 semanas; capacidade aeróbica começa a melhorar de forma mensurável por volta de 4–6 semanas."
+            }
+          ]
+        },
+        {
+          "a": 29,
+          "b": 66,
+          "t": "Rumo à automaticidade",
+          "it": [
+            {
+              "id": "ex-5-1",
+              "grau": "p",
+              "texto": "Mudanças visíveis de composição corporal costumam exigir 8 semanas ou mais."
+            },
+            {
+              "id": "ex-5-2",
+              "grau": "p",
+              "texto": "Para academia, um estudo achou como mínimo pelo menos 4 sessões por semana durante 6 semanas; outro, com grandes bases de dados, indica meses e nenhum número mágico."
+            }
+          ]
+        },
+        {
+          "a": 67,
+          "b": 9999,
+          "t": "Consolidação",
+          "it": [
+            {
+              "id": "ex-6-1",
+              "grau": "p",
+              "texto": "Falhas isoladas pesam pouco na curva do hábito."
+            },
+            {
+              "id": "ex-6-2",
+              "grau": "i",
+              "texto": "A decisão diária tende a cair, mas depende de contexto fixo (horário, lugar, companhia)."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "piscina",
+      "nome": "Piscina",
+      "tipo": "semanal",
+      "crit": "Foi à piscina da UFMT ao menos 1 vez na semana",
+      "obs": "Conta semanas seguidas em que a meta da semana foi cumprida. A página presume que foi; registre só a semana que não deu.",
+      "faixas": [
+        {
+          "a": 1,
+          "b": 9999,
+          "t": "Ainda sem pesquisa sobre hábitos semanais",
+          "it": []
+        }
+      ]
+    },
+    {
+      "id": "bike",
+      "nome": "Bicicleta",
+      "tipo": "semanal",
+      "crit": "Pedalou (bicicleta sem motor) ao menos 1 vez na semana",
+      "obs": "Conta semanas seguidas em que a meta da semana foi cumprida. A página presume que foi; registre só a semana que não deu.",
+      "faixas": [
+        {
+          "a": 1,
+          "b": 9999,
+          "t": "Ainda sem pesquisa sobre hábitos semanais",
+          "it": []
+        }
+      ]
+    },
+    {
+      "id": "corda",
+      "nome": "Corda",
+      "tipo": "semanal",
+      "crit": "Pulou corda por 20 a 30 minutos, quantas vezes o nível pede",
+      "obs": "Conta semanas seguidas em que a meta da semana foi cumprida. A página presume que foi; registre só a semana que não deu.",
+      "niveis": [
+        {
+          "nome": "1 vez por semana"
+        },
+        {
+          "nome": "2 vezes por semana"
+        },
+        {
+          "nome": "3 vezes por semana"
+        }
+      ],
+      "faixas": [
+        {
+          "a": 1,
+          "b": 9999,
+          "t": "Ainda sem pesquisa sobre hábitos semanais",
+          "it": []
+        }
+      ]
+    },
+    {
+      "id": "arvores",
+      "nome": "Árvores",
+      "tipo": "intervalo",
+      "crit": "Dias desde a última vez",
+      "obs": "Conta os dias desde a última vez. A página presume que não aconteceu; registre só quando acontecer. O nível muda só na revisão de fim de ciclo: manter Evitar, descer para o piso (pelo menos 3 dias entre vezes) ou soltar.",
+      "niveis": [
+        {
+          "nome": "Pelo menos 3 dias entre vezes",
+          "min": 3
+        },
+        {
+          "nome": "Evitar"
+        }
+      ],
+      "nivelIni": 1,
+      "faixas": [
+        {
+          "a": 1,
+          "b": 9999,
+          "t": "Ainda sem pesquisa sobre este hábito",
+          "it": []
+        }
+      ]
+    },
+    {
+      "id": "simulacao",
+      "nome": "Simulação-de-prazer",
+      "tipo": "intervalo",
+      "crit": "Dias desde a última vez",
+      "obs": "Conta os dias desde a última vez. A página presume que não aconteceu; registre só quando acontecer.",
+      "niveis": [
+        {
+          "nome": "Pelo menos 7 dias entre vezes",
+          "min": 7
+        },
+        {
+          "nome": "Pelo menos 14 dias entre vezes",
+          "min": 14
+        },
+        {
+          "nome": "Pelo menos 21 dias entre vezes",
+          "min": 21
+        },
+        {
+          "nome": "Evitar"
+        }
+      ],
+      "nivelIni": 3,
+      "faixas": [
+        {
+          "a": 1,
+          "b": 9999,
+          "t": "Ainda sem pesquisa sobre este hábito",
+          "it": []
+        }
+      ]
+    },
+    {
+      "id": "ficcao",
+      "nome": "Ficção",
+      "tipo": "semanal",
+      "crit": "Leu ficção, quantas vezes por semana o nível pede",
+      "obs": "Conta semanas seguidas em que a meta da semana foi cumprida. A página presume que foi; registre só a semana que não deu. O ideal é todos os dias; 3 vezes por semana é o começo realista.",
+      "niveis": [
+        {
+          "nome": "3 vezes por semana"
+        },
+        {
+          "nome": "5 vezes por semana"
+        },
+        {
+          "nome": "Todos os dias"
+        }
+      ],
+      "faixas": [
+        {
+          "a": 1,
+          "b": 9999,
+          "t": "Ainda sem pesquisa sobre hábitos semanais",
+          "it": []
+        }
+      ]
+    },
+    {
+      "id": "ingles",
+      "nome": "Inglês",
+      "tipo": "semanal",
+      "crit": "Estudou inglês, quantas vezes por semana o nível pede",
+      "obs": "Conta semanas seguidas em que a meta da semana foi cumprida. A página presume que foi; registre só a semana que não deu. O ideal é todos os dias; 3 vezes por semana é o começo realista. Objetivo: exame C1 de Cambridge.",
+      "niveis": [
+        {
+          "nome": "3 vezes por semana"
+        },
+        {
+          "nome": "5 vezes por semana"
+        },
+        {
+          "nome": "Todos os dias"
+        }
+      ],
+      "faixas": [
+        {
+          "a": 1,
+          "b": 9999,
+          "t": "Ainda sem pesquisa sobre hábitos semanais",
+          "it": []
+        }
+      ]
+    },
+    {
+      "id": "pesquisa",
+      "nome": "Pesquisa acadêmica",
+      "crit": "Dois pomodoros de 25 minutos, com 5 minutos de pausa, só no tema da pesquisa atual",
+      "obs": "Conta como dia: dois blocos de 25 minutos (com 5 minutos de pausa entre eles) de dedicação exclusiva ao tema da pesquisa atual. Hoje é o mestrado; se houver outro curso, o tema dele também vale. Nos áudios de junho e julho de 2026 (leitura preliminar, sem validação), foi o segundo hábito mais relatado e o que mais apareceu como só intenção.",
+      "faixas": [
+        {
+          "a": 1,
+          "b": 9999,
+          "t": "Ainda sem pesquisa sobre este hábito",
+          "it": []
+        }
+      ]
+    }
+  ];
+  const byId = Object.fromEntries(HABITS.map(h => [h.id, h]));
+
+  // Camadas (src/camadas.json): texto geral, categorias com seus textos e textos para o momento da quebra.
+  const CAMADAS = {
+    "geral": [
+      {
+        "id": "cat-geral-1",
+        "texto": "Começar e manter são fases diferentes. A manutenção costuma depender de motivos próprios, autorregulação, recursos, hábito e ambiente.",
+        "grau": "p"
+      }
+    ],
+    "categorias": [
+      {
+        "id": "substancias",
+        "nome": "Substâncias",
+        "sub": "Reduzir ou cortar",
+        "habitos": [
+          "cafe",
+          "arvores"
+        ],
+        "it": [
+          {
+            "id": "cat-subst-1",
+            "texto": "Em fumantes, um deslize aumentou por si só o risco de voltar ao consumo, mesmo com cigarro sem nicotina: o ato e o contexto pesam, não só a substância. Não há estudo equivalente com cafeína.",
+            "grau": "i"
+          }
+        ]
+      },
+      {
+        "id": "mente",
+        "nome": "Mente",
+        "sub": "Atenção e impulsos",
+        "habitos": [
+          "med",
+          "ia"
+        ],
+        "it": [
+          {
+            "id": "cat-mente-1",
+            "texto": "Em programas de atenção plena de oito semanas, as pessoas fizeram em média 64% da prática pedida (cerca de 30 minutos, seis dias por semana). Mais prática teve associação pequena com resultados melhores.",
+            "grau": "e"
+          }
+        ]
+      },
+      {
+        "id": "letras",
+        "nome": "Letras",
+        "sub": "Ler, estudar e pesquisar",
+        "habitos": [
+          "ficcao",
+          "ingles",
+          "pesquisa"
+        ],
+        "it": []
+      },
+      {
+        "id": "corpo",
+        "nome": "Corpo",
+        "sub": "Ritmo e movimento",
+        "habitos": [
+          "sono",
+          "ex",
+          "piscina",
+          "bike",
+          "corda"
+        ],
+        "it": [
+          {
+            "id": "cat-corpo-1",
+            "texto": "Quem manteve a atividade física tinha, já no início, mais confiança em conseguir e mais intenção do que quem parou. Esses fatores explicam só cerca de 20% da diferença.",
+            "grau": "e"
+          }
+        ]
+      },
+      {
+        "id": "jardim",
+        "nome": "Jardim das delícias",
+        "sub": "Espaçar",
+        "habitos": [
+          "simulacao"
+        ],
+        "it": []
+      }
+    ],
+    "quebra": {
+      "geral": [
+        {
+          "id": "q-geral-1",
+          "texto": "Faltar um dia isolado não costuma atrapalhar a formação do hábito; o que pesa é a regularidade ao longo das semanas.",
+          "grau": "p"
+        },
+        {
+          "id": "q-geral-2",
+          "texto": "Ver a sequência \"quebrada\" desanima mais do que a falta em si. O efeito é maior quando a pessoa se culpa e menor quando a sequência pode ser retomada sem recomeçar do zero.",
+          "grau": "p"
+        },
+        {
+          "id": "q-geral-3",
+          "texto": "Ajuda decidir de antemão o que fazer diante do obstáculo que causou a quebra (\"se X acontecer, faço Y\"), de preferência junto com o plano de quando e onde. O efeito varia entre os estudos.",
+          "grau": "p"
+        },
+        {
+          "id": "q-geral-4",
+          "texto": "Inícios de semana, de mês ou datas pessoais costumam aumentar a disposição para recomeçar. Os estudos mediram o recomeço, não a permanência.",
+          "grau": "p"
+        }
+      ],
+      "cafe": [
+        {
+          "id": "q-cafe-1",
+          "texto": "Em fumantes, sentir vontade de desistir de tudo depois de um deslize antecipou o deslize seguinte; culpa e autocrítica, não. Tentar retomar no mesmo dia reduziu novo deslize naquele dia. Não há estudo equivalente com cafeína.",
+          "grau": "i"
+        }
+      ],
+      "ex": [
+        {
+          "id": "q-ex-1",
+          "texto": "Ter confiança específica em conseguir retomar depois de uma pausa previu mais exercício nos meses seguintes. Estudo com pacientes em reabilitação cardíaca.",
+          "grau": "p"
+        }
+      ]
+    }
+  };
+  const CATS = CAMADAS.categorias;
+  const QUEBRA = CAMADAS.quebra;
+  const itemsHTML = its => its.length ? `<ul class="items">${its.map(x => `<li><span class="tag ${x.grau}">${F[x.grau]}</span><span>${x.texto}</span></li>`).join("")}</ul>` : "";
+
+  // ---------- estado ----------
+  // Para cada hábito guarda a data de início da sequência atual (ou null), o histórico de sequências
+  // encerradas e a última faixa já vista (para anunciar marcos uma vez só).
+  const KEY = "marcos_por_dia_v2";
+  const pad = n => String(n).padStart(2, "0");
+  const iso = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+  const today = () => iso(new Date());
+  const toDay = s => { const [y, m, d] = s.split("-").map(Number); return Date.UTC(y, m - 1, d) / 864e5; };
+  const fromDay = n => { const d = new Date(n * 864e5); return d.getUTCFullYear() + "-" + pad(d.getUTCMonth() + 1) + "-" + pad(d.getUTCDate()); };
+  const br = s => { const [y, m, d] = s.split("-"); return d + "/" + m + "/" + y.slice(2); };
+
+  let S = { h: {} };
+  try { const s = JSON.parse(localStorage.getItem(KEY) || "null"); if (s && s.h) S = s; } catch (e) {}
+  HABITS.forEach(h => { S.h[h.id] = Object.assign({ ini: null, hist: [], visto: -1, nivel: h.nivelIni || 0, nhist: [], ciclo: null, chist: [], solto: null }, S.h[h.id]); });
+  // Migração: se a versão anterior tinha números, eles viram sequências que começam hoje menos (n − 1) dias.
+  if (!S.migrado) {
+    try {
+      const old = JSON.parse(localStorage.getItem("marcos_por_dia_v1") || "null");
+      if (old) HABITS.forEach(h => { const n = parseInt(old[h.id], 10) || 0; if (n > 0 && !S.h[h.id].ini) { S.h[h.id].ini = fromDay(toDay(today()) - (n - 1)); S.h[h.id].visto = idxFor(h, n); } });
+    } catch (e) {}
+    S.migrado = true;
+  }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} };
+  save();
+
+  // Dois tipos de contagem. Diário: dias seguidos. Semanal: semanas seguidas (segunda a domingo) com a meta cumprida.
+  // Nos dois, a contagem é presumida: se começou em X, hoje é o dia (ou a semana) de número (hoje − X) + 1.
+  // Intervalo: dias desde a última vez. A página presume que não aconteceu; registra-se a ocorrência.
+  // Uma ocorrência só é quebra se o intervalo ficou abaixo do mínimo do nível (no nível "Evitar", qualquer uma é).
+  const semanal = h => h.tipo === "semanal";
+  const intervalo = h => h.tipo === "intervalo";
+  const passo = h => semanal(h) ? 7 : 1;
+  const U = h => semanal(h) ? ["semana", "semanas"] : intervalo(h) ? ["dia sem", "dias sem"] : ["dia", "dias"];
+  const minimo = h => h.niveis ? h.niveis[S.h[h.id].nivel].min || null : null;
+  const un = (h, n) => n + " " + U(h)[n === 1 ? 0 : 1];
+  // Segunda-feira da semana de uma data (número de dias desde 1970).
+  const segunda = n => n - ((new Date(n * 864e5).getUTCDay() + 6) % 7);
+  const hojeN = h => semanal(h) ? segunda(toDay(today())) : toDay(today());
+  function count(id) {
+    const st = S.h[id], h = byId[id];
+    if (!st.ini) return 0;
+    const dif = hojeN(h) - toDay(st.ini);
+    return dif < 0 ? 0 : Math.floor(dif / passo(h)) + 1;
+  }
+  // Sequência marcada para começar numa segunda futura (depois de uma semana que não deu).
+  const agendado = id => S.h[id].ini && toDay(S.h[id].ini) > toDay(today());
+  function setCount(id, n) {
+    n = Math.max(0, Math.min(3650, parseInt(n, 10) || 0));
+    const st = S.h[id], h = byId[id];
+    st.ini = n > 0 ? fromDay(hojeN(h) - (n - 1) * passo(h)) : null;
+    st.visto = Math.min(st.visto, n > 0 ? idxFor(byId[id], n) : -1);
+    save();
+  }
+  function best(id) { return Math.max(count(id), ...S.h[id].hist.map(x => x.dias)); }
+
+  // ---------- ciclos ----------
+  // Um ciclo tem início e duração (3, 7 ou 10 semanas). A porcentagem é a parte dos dias do ciclo
+  // coberta por sequências: as guardadas no histórico e a atual. Dia de quebra de hábito diário não conta.
+  // Semanal: as semanas que não deram ficam fora das sequências, então a conta em dias dá a mesma proporção.
+  // Intervalo: os dias da vez ficam fora; além disso conta quantas vezes respeitaram o mínimo do nível.
+  const SEMANAS_CICLO = 7; // decisão do usuário em 08/11/26: 7 semanas para todos
+  const fimCiclo = c => toDay(c.ini) + c.sem * 7 - 1;
+  function medir(h, c, ate) {
+    const st = S.h[h.id], a = toDay(c.ini), b = Math.min(fimCiclo(c), ate);
+    const cob = new Set(), falha = new Set();
+    const cobrir = (i, f) => { for (let d = Math.max(i, a); d <= Math.min(f, b); d++) cob.add(d); };
+    st.hist.forEach(x => {
+      if (x.dias > 0) cobrir(toDay(x.ini), toDay(x.fim));
+      if (!semanal(h) && !intervalo(h)) falha.add(toDay(x.fim));
+    });
+    if (st.ini) cobrir(toDay(st.ini), toDay(today()));
+    falha.forEach(d => cob.delete(d));
+    const total = Math.max(0, b - a + 1), feitos = cob.size;
+    const vezes = intervalo(h) ? st.hist.filter(x => x.vez && toDay(x.vez) >= a && toDay(x.vez) <= b) : [];
+    return { total, feitos, pct: total ? Math.round(100 * feitos / total) : 0, vezes: vezes.length, vezesOk: vezes.filter(x => x.ok).length };
+  }
+  const medidaTxt = (h, m) => semanal(h)
+    ? `${Math.round(m.feitos / 7)} de ${Math.round(m.total / 7)} semanas cumpridas`
+    : intervalo(h) ? `${m.feitos} de ${m.total} dias sem` : `${m.feitos} de ${m.total} dias cumpridos`;
+  const vezesTxt = (h, m) => intervalo(h) && m.vezes ? ` · ${m.vezesOk} de ${m.vezes} ${m.vezes === 1 ? "vez respeitou" : "vezes respeitaram"} o mínimo` : "";
+  const cicloAcabou = id => { const c = S.h[id].ciclo; return c && fimCiclo(c) < toDay(today()); };
+
+  function idxFor(h, d) {
+    if (d < 1) return 0;
+    for (let i = 0; i < h.faixas.length; i++) if (d >= h.faixas[i].a && d <= h.faixas[i].b) return i;
+    return h.faixas.length - 1;
+  }
+  const rangeLabel = f => f.b >= INF ? f.a + "+" : f.a + "–" + f.b;
+  const plural = (n, s) => n + " " + s + (n === 1 ? "" : "s");
+  const catOf = id => CATS.find(c => c.habitos.includes(id));
+
+  // ---------- telas ----------
+  const app = document.getElementById("app");
+  let ui = { confirmar: false, quebra: null, copia: null, ciclo: false };
+
+  function home() {
+    const rows = CATS.map(c => {
+      const resumo = c.habitos.map(id => byId[id].nome + " " + (S.h[id].solto ? "solto" : count(id) + (semanal(byId[id]) ? " sem" : ""))).join(" · ");
+      return `<li><a href="#/c/${c.id}"><span><span class="name">${c.nome}</span><span class="sub">${resumo}</span></span><span class="chev">›</span></a></li>`;
+    }).join("");
+    return `<header><div class="label">Marcos por dia</div><h1>Categorias</h1></header>
+      <ul class="list">${rows}</ul>
+      ${CAMADAS.geral.length ? `<details><summary>Começar e manter</summary><div class="inside">${itemsHTML(CAMADAS.geral)}</div></details>` : ""}
+      <details><summary>Como ler as etiquetas</summary><div class="inside">
+        <p><span class="tag e">Firme</span> — achado replicado ou revisão consolidada, na média das pessoas.</p>
+        <p><span class="tag">Plausível</span> — mecanismo conhecido ou dado indireto. Provável, não garantido.</p>
+        <p><span class="tag">Varia</span> — depende muito da pessoa e do contexto. Hipótese a observar.</p>
+      </div></details>
+      <details><summary>Fontes e limites</summary><div class="inside">
+        <p>Abstinência de cafeína: Juliano &amp; Griffiths (2004); Evans &amp; Griffiths (1999); Dews et al. (1999); Mills et al. (2019). Adenosina e sono: Reichert, Deboer &amp; Landolt (2022); Weibel et al. (2021). Meia-vida: Blanchard &amp; Sawers (1983); Whitsett et al. (1984); Nehlig (2018); Grzegorzewski et al. (2022).</p>
+        <p>Formação de hábito: Lally et al. (2010); Singh et al. (2024); Kaushal &amp; Rhodes (2015); Buyalskaya et al. (2023). Nenhum tratou de meditação: as faixas de meditação são extrapolação.</p>
+        <p>Ritmo circadiano, efeito agudo do exercício, dor muscular e força inicial foram conferidos em revisões e meta-análises (a maioria só pelo resumo). As demais afirmações de sono, exercício e meditação vêm de conhecimento geral e ainda não foram conferidas. Nenhuma faixa é diagnóstico ou previsão individual.</p>
+        <p>Categorias e retomada depois de zerar: Kwasnicka et al. (2013; 2016); Silverman &amp; Barasch (2022); Dai, Milkman &amp; Riis (2014); Shiffman et al. (1996); Kirchner, Shiffman &amp; Wileyto (2012); Juliano et al. (2006); Scholz, Sniehotta &amp; Schwarzer (2005); Parsons et al. (2017); Amireault, Godin &amp; Vézina-Im (2013). Os textos sobre café vêm de estudos com fumantes. Não há pesquisa específica sobre retomar o sono nem sobre os marcos em si.</p>
+        <p>A contagem e o histórico ficam só neste navegador, neste aparelho. Limpar os dados do navegador apaga tudo; use “Copiar histórico” em cada hábito como cópia de segurança.</p>
+      </div></details>`;
+  }
+
+  function cat(c) {
+    const rows = c.habitos.map(id => {
+      const h = byId[id], n = count(id), f = h.faixas[idxFor(h, n)];
+      return `<li><a href="#/h/${id}"><span><span class="name">${h.nome}</span><span class="sub">${S.h[id].solto ? "Anda sozinho" : n ? f.t : intervalo(h) && agendado(id) ? "Última vez hoje" : "Não iniciado"}</span></span><span class="n${n && !S.h[id].solto ? "" : " zero"}">${S.h[id].solto ? "—" : n}${semanal(h) && !S.h[id].solto ? `<span class="u">sem</span>` : ""}<span class="chev">›</span></span></a></li>`;
+    }).join("");
+    return `<a class="back" href="#/">‹ Categorias</a>
+      <header><div class="label">Categoria</div><h1>${c.nome}</h1></header>
+      <ul class="list">${rows}</ul>
+      <details><summary>Sobre esta categoria</summary><div class="inside">
+        ${(c.it || []).length ? itemsHTML(c.it) : `<p class="empty">Ainda sem pesquisa para este nível.</p>`}
+      </div></details>`;
+  }
+
+  function habit(h) {
+    const st = S.h[h.id], n = count(h.id), i = idxFor(h, n), f = h.faixas[i], nx = h.faixas[i + 1], c = catOf(h.id);
+    const rec = best(h.id), uu = n => un(h, n);
+    let top = "";
+
+    if (ui.quebra && ui.quebra.id === h.id && intervalo(h)) {
+      // Ocorrência registrada: dentro do mínimo é intervalo cumprido; abaixo dele é quebra, com os textos de recaída.
+      // Os textos gerais de quebra falam de hábitos a construir ("faltar um dia"); aqui só entram os do próprio hábito.
+      const r = ui.quebra, q = r.ok ? "" : itemsHTML(QUEBRA[h.id] || []);
+      top = `<div class="note mark"><div class="label">${r.ok ? "Intervalo cumprido" : "Registrado"}</div>
+        <p>${uu(r.dias)}${r.dias ? ` (${br(r.ini)} a ${br(r.fim)})` : ""} ficaram no histórico. ${r.min ? `O mínimo do nível era ${r.min} ${r.min === 1 ? "dia" : "dias"}: ${r.ok ? "cumprido" : "ficou abaixo"}.` : "No nível Evitar, qualquer vez encerra a sequência."} A contagem recomeça amanhã.</p>
+        ${r.ok ? "" : `<div class="label">Para a próxima vez</div>${q ? q : `<p class="empty">Ainda sem pesquisa sobre recaída para este hábito.</p>`}`}
+        <div class="row-btns"><button class="btn quiet" data-act="fechar">Ok</button></div></div>`;
+    } else if (ui.quebra && ui.quebra.id === h.id) {
+      // Primeiro o que é específico do hábito, depois o que vale para qualquer hábito.
+      const q = itemsHTML([...(QUEBRA[h.id] || []), ...(QUEBRA.geral || [])]);
+      top = `<div class="note mark"><div class="label">Sequência guardada</div>
+        <p>${uu(ui.quebra.dias)} (${br(ui.quebra.ini)} a ${br(ui.quebra.fim)}) ficaram no histórico. Recorde: ${uu(rec)}.</p>
+        <div class="label">Para a próxima vez</div>
+        ${q ? q : `<p class="empty">Ainda sem pesquisa sobre recaída para este hábito.</p>`}
+        <div class="row-btns"><button class="btn primary" data-act="comecar">${semanal(h) ? "Recomeçar na segunda, " + br(fromDay(segunda(toDay(today())) + 7)) : "Recomeçar hoje"}</button><button class="btn quiet" data-act="fechar">Depois</button></div></div>`;
+    } else if (cicloAcabou(h.id) && !st.solto) {
+      // Revisão de fim de ciclo: o resultado e quatro saídas. Nada muda sem uma escolha.
+      const c = st.ciclo, m = medir(h, c, fimCiclo(c));
+      top = `<div class="note mark"><div class="label">Fim do ciclo de ${c.sem} semanas · ${br(c.ini)} a ${br(fromDay(fimCiclo(c)))}</div>
+        <p>${m.pct === 100 ? "Meta cumprida" : "Meta atingida em " + m.pct + "%"}: ${medidaTxt(h, m)}${vezesTxt(h, m)}.</p>
+        <p class="small">Manter, subir de degrau, descer para o piso ou soltar a contagem. O próximo ciclo começa no dia seguinte ao fim deste.</p>
+        <div class="row-btns"><button class="btn primary" data-act="rev-manter">Manter</button>${h.niveis && st.nivel < h.niveis.length - 1 ? `<button class="btn quiet" data-act="rev-subir">Subir: ${h.niveis[st.nivel + 1].nome}</button>` : ""}${h.niveis && st.nivel > 0 ? `<button class="btn quiet" data-act="rev-piso">Piso: ${h.niveis[st.nivel - 1].nome}</button>` : ""}<button class="btn quiet" data-act="rev-soltar">Soltar</button></div></div>`;
+    } else if (n > 0 && i > st.visto && !st.solto) {
+      top = `<div class="note mark"><div class="label">Marco alcançado · ${U(h)[0]} ${f.a}</div>
+        <p>${f.t}.</p>
+        ${f.it.length ? itemsHTML(f.it.slice(0, 1)) : ""}
+        <p class="empty">Não há pesquisa sobre os marcos em si; o texto acima é o primeiro item desta faixa.</p>
+        <div class="row-btns"><button class="btn quiet" data-act="visto">Ok</button></div></div>`;
+    }
+
+    const c0 = st.ciclo && !cicloAcabou(h.id) ? st.ciclo : null, mc = c0 ? medir(h, c0, toDay(today())) : null;
+    const semC = c0 ? Math.min(c0.sem, Math.floor((toDay(today()) - toDay(c0.ini)) / 7) + 1) : 0;
+    const linhaCiclo = c0 && toDay(c0.ini) <= toDay(today()) ? `<p class="small">Ciclo: semana ${semC} de ${c0.sem} · ${mc.pct}% até agora</p>` : "";
+    const head = st.solto
+      ? `<div class="count"><span class="big">—</span><span class="unit">anda sozinho desde ${br(st.solto)}</span></div>
+         <p class="small">A contagem foi solta numa revisão de ciclo. O histórico continua guardado.</p>
+         <div class="row-btns"><button class="btn quiet" data-act="voltar">Voltar a contar</button></div>`
+      : (n > 0
+      ? `<div class="count"><span class="big">${n}</span><span class="unit">${U(h)[n === 1 ? 0 : 1]} · desde ${br(st.ini)}</span></div>
+         <div class="band"><div class="small">Faixa ${semanal(h) ? "das semanas" : "dos dias"} ${rangeLabel(f)}</div><div class="t">${f.t}</div>
+         ${nx ? `<div class="small">Próxima em ${uu(nx.a - n)}: ${nx.t}</div>` : ""}</div>`
+      : agendado(h.id)
+      ? `<div class="count"><span class="big">0</span><span class="unit">${intervalo(h) ? "última vez hoje · a contagem começa amanhã" : "recomeça na segunda, " + br(st.ini)}</span></div>`
+      : `<div class="count"><span class="big">0</span><span class="unit">sem sequência em curso</span></div>
+         ${ui.quebra ? "" : `<div class="row-btns"><button class="btn primary" data-act="comecar">${semanal(h) ? "Começar nesta semana" : intervalo(h) ? "Começar a contar hoje" : "Começar hoje"}</button></div>`}`) + linhaCiclo;
+
+    // Seção do ciclo: em curso (com a medida até agora) ou formulário para começar um.
+    const revs = st.chist.length ? `<ul class="hist">${st.chist.slice().reverse().map(x => `<li><span>${br(x.ini)} a ${br(x.fim)} · ${x.decisao}</span><span class="d">${x.pct}%</span></li>`).join("")}</ul>` : "";
+    const ciclo = st.solto ? "" : `<details${ui.ciclo ? " open" : ""}><summary>Ciclo${c0 ? ` · semana ${semC} de ${c0.sem}` : ""}</summary><div class="inside">
+        ${c0 ? `<p>${c0.sem} semanas, de ${br(c0.ini)} a ${br(fromDay(fimCiclo(c0)))}.</p>
+          <p class="small">Até agora: ${mc.pct}% · ${medidaTxt(h, mc)}${vezesTxt(h, mc)}. A página presume que os dias sem registro foram cumpridos.</p>
+          <div class="row-btns"><button class="btn quiet" data-act="ciclo-cancelar">Cancelar ciclo</button></div>`
+        : st.ciclo ? `<p class="small">O ciclo terminou; a revisão está no topo da página.</p>`
+        : `<p class="small">Sem ciclo em curso. Os ciclos têm 7 semanas; escolha a data de início (pode ser no passado).${semanal(h) ? " Em hábitos semanais, o ciclo começa na segunda-feira da semana escolhida." : ""}</p>
+          <div class="row-btns">
+          <input id="cini" type="date" value="${today()}" max="${today()}" aria-label="Início do ciclo">
+          <button class="btn quiet" data-act="ciclo-comecar">Começar ciclo</button></div>`}
+        ${revs ? `<div class="label">Revisões</div>${revs}` : ""}
+      </div></details>`;
+
+    const items = itemsHTML(f.it);
+    const rows = h.faixas.map((x, k) => `<div class="${n > 0 && k === i ? "cur" : ""}"><span class="r">${rangeLabel(x)}</span><span>${x.t}</span></div>`).join("");
+    const hist = st.hist.length
+      ? `<ul class="hist">${st.hist.slice().reverse().map(x => `<li><span>${x.dias ? br(x.ini) + " a " + br(x.fim) : "vez em " + br(x.vez)}</span><span class="d">${x.dias}${semanal(h) ? " sem" : ""}${intervalo(h) ? (x.ok ? " · ok" : " · quebra") : ""}</span></li>`).join("")}</ul>`
+      : `<p class="empty">Nenhuma sequência encerrada ainda.</p>`;
+
+    // Intervalo: o botão é "Aconteceu hoje" e fica disponível sempre que a contagem foi iniciada (inclusive no dia de uma vez anterior).
+    const zerar = st.solto ? "" : intervalo(h) ? (st.ini ? (ui.confirmar
+      ? `<div class="note"><p>Aconteceu hoje? ${n > 1 ? `Os ${uu(n - 1)} até ontem ficam` : "A vez fica"} no histórico, e a contagem recomeça amanhã.</p>
+         <div class="row-btns"><button class="btn danger" data-act="zerar">Registrar</button><button class="btn quiet" data-act="cancelar">Cancelar</button></div></div>`
+      : `<div class="row-btns"><button class="btn quiet" data-act="pedir">Aconteceu hoje</button></div>`) : "")
+      : n > 0 ? (ui.confirmar
+      ? `<div class="note"><p>${semanal(h) ? `Esta semana não deu? As ${uu(n)} ficam guardadas no histórico.` : `Zerar ${uu(n)}? A sequência fica guardada no histórico.`}</p>
+         <div class="row-btns"><button class="btn danger" data-act="zerar">${semanal(h) ? "Encerrar" : "Zerar"}</button><button class="btn quiet" data-act="cancelar">Cancelar</button></div></div>`
+      : `<div class="row-btns"><button class="btn quiet" data-act="pedir">${semanal(h) ? "Esta semana não deu" : "Zerar sequência"}</button></div>`) : "";
+
+    // Níveis: degraus do mesmo hábito. Mudar de nível não zera a sequência; a mudança fica registrada.
+    const nv = h.niveis ? h.niveis.map((x, k) => `<div class="${k === st.nivel ? "cur" : ""}"><span class="r">${k + 1}</span><span>${x.nome}</span></div>`).join("") : "";
+    const nivel = h.niveis ? `<details><summary>Nível · ${h.niveis[st.nivel].nome}</summary><div class="inside">
+        <div class="all">${nv}</div>
+        <p class="small">Mudar de nível não zera a sequência; a mudança fica no histórico.</p>
+        <div class="row-btns">${st.nivel < h.niveis.length - 1 ? `<button class="btn quiet" data-act="subir">Subir para ${h.niveis[st.nivel + 1].nome}</button>` : ""}${st.nivel > 0 ? `<button class="btn quiet" data-act="descer">Voltar para ${h.niveis[st.nivel - 1].nome}</button>` : ""}</div>
+        ${st.nhist.length ? `<ul class="hist">${st.nhist.slice().reverse().map(x => `<li><span>${br(x.data)}</span><span>${h.niveis[x.nivel].nome}</span></li>`).join("")}</ul>` : ""}
+      </div></details>` : "";
+
+    return `<a class="back" href="#/c/${c.id}">‹ ${c.nome}</a>
+      <header><h1>${h.nome}</h1><p class="small">${intervalo(h) ? "Conta os " + h.crit.charAt(0).toLowerCase() + h.crit.slice(1) : `Conta como ${U(h)[0]}: ${h.crit.charAt(0).toLowerCase() + h.crit.slice(1)}`}${h.niveis ? ` · nível: ${h.niveis[st.nivel].nome}` : ""}</p></header>
+      ${top}
+      ${head}
+      <div>
+      ${n > 0 && !st.solto ? `<details><summary>O que costuma acontecer agora</summary><div class="inside">${items}<p class="small">${h.obs}</p></div></details>` : ""}
+      ${ciclo}
+      ${nivel}
+      <details><summary>Todas as faixas</summary><div class="inside"><div class="all">${rows}</div></div></details>
+      <details${ui.copia ? " open" : ""}><summary>Histórico · recorde ${rec}</summary><div class="inside">${hist}
+        <div class="row-btns"><button class="btn quiet" data-act="copiar">Copiar histórico</button></div>
+        ${ui.copia ? `<p class="small">${ui.copia.msg}</p>${ui.copia.txt ? `<textarea readonly>${ui.copia.txt}</textarea>` : ""}` : ""}
+      </div></details>
+      <details><summary>Corrigir contagem</summary><div class="inside">
+        <p class="small">Para ajustar o número de ${U(h)[1]} sem registrar quebra (por exemplo, se esqueceu de abrir a página quando começou).</p>
+        <div class="stepper"><button data-act="dec" aria-label="Menos um">−</button><input id="n" type="number" inputmode="numeric" min="0" value="${n}" aria-label="Contagem da sequência"><button data-act="inc" aria-label="Mais um">+</button></div>
+      </div></details>
+      </div>
+      ${zerar}`;
+  }
+
+  function render() {
+    const r = location.hash.replace(/^#\/?/, "").split("/");
+    let html;
+    if (r[0] === "c" && CATS.find(c => c.id === r[1])) html = cat(CATS.find(c => c.id === r[1]));
+    else if (r[0] === "h" && byId[r[1]]) html = habit(byId[r[1]]);
+    else html = home();
+    // Na mesma tela, as seções abertas continuam abertas depois de redesenhar (ex.: + e − em "Corrigir contagem").
+    const chave = d => d.querySelector("summary").textContent.split(" · ")[0];
+    const abertas = location.hash === lastHash ? [...app.querySelectorAll("details[open]")].map(chave) : [];
+    lastHash = location.hash;
+    app.innerHTML = html;
+    app.querySelectorAll("details").forEach(d => { if (abertas.includes(chave(d))) d.open = true; });
+  }
+  let lastHash = null;
+
+  function exportText() {
+    const lines = ["Marcos por dia — histórico em " + br(today()), ""];
+    HABITS.forEach(h => {
+      const st = S.h[h.id];
+      lines.push(h.nome + ": " + un(h, count(h.id)) + (st.ini ? " (desde " + br(st.ini) + ")" : "") + "; recorde " + best(h.id) + (h.niveis ? "; nível " + h.niveis[st.nivel].nome : ""));
+      st.hist.forEach(x => lines.push("  " + (x.dias ? br(x.ini) + " a " + br(x.fim) : "vez em " + br(x.vez)) + ": " + un(h, x.dias) + (intervalo(h) ? (x.ok ? " (ok)" : " (quebra)") : "")));
+      st.nhist.forEach(x => lines.push("  nível em " + br(x.data) + ": " + h.niveis[x.nivel].nome));
+      if (st.ciclo) lines.push("  ciclo em curso: " + st.ciclo.sem + " semanas desde " + br(st.ciclo.ini));
+      st.chist.forEach(x => lines.push("  ciclo " + br(x.ini) + " a " + br(x.fim) + ": " + x.pct + "%, " + x.decisao));
+      if (st.solto) lines.push("  solto desde " + br(st.solto));
+    });
+    lines.push("", "Dados brutos:", JSON.stringify(S));
+    return lines.join("\n");
+  }
+
+  app.addEventListener("click", ev => {
+    const b = ev.target.closest("button[data-act]");
+    if (!b) return;
+    const id = (location.hash.match(/^#\/h\/(\w+)/) || [])[1];
+    if (!id) return;
+    const st = S.h[id], act = b.dataset.act;
+    if (act === "pedir") ui.confirmar = true;
+    else if (act === "cancelar") ui.confirmar = false;
+    else if (act === "zerar") {
+      const n = count(id), h = byId[id];
+      if (intervalo(h)) {
+        // A vez de hoje fecha o intervalo: os dias sem vão do início até ontem. A contagem segue sozinha a partir de amanhã.
+        const dias = Math.max(0, n - 1), min = minimo(h);
+        const reg = { ini: st.ini, fim: fromDay(toDay(today()) - 1), dias, vez: today(), nivel: st.nivel, min, ok: min !== null && dias >= min };
+        st.hist.push(reg);
+        st.ini = fromDay(toDay(today()) + 1); st.visto = -1; save();
+        ui = { confirmar: false, quebra: Object.assign({ id }, reg), copia: null };
+        render(); return;
+      }
+      // Semanal: a semana em curso não deu, então a sequência guardada termina no domingo anterior.
+      const reg = semanal(h)
+        ? { ini: st.ini, fim: fromDay(segunda(toDay(today())) - 1), dias: n - 1 }
+        : { ini: st.ini, fim: today(), dias: n };
+      if (reg.dias > 0) st.hist.push(reg);
+      st.ini = null; st.visto = -1; save();
+      ui = { confirmar: false, quebra: Object.assign({ id }, reg), copia: null };
+    }
+    else if (act === "comecar") {
+      const h = byId[id];
+      // Semanal: a primeira vez começa nesta semana; depois de uma semana que não deu, na próxima segunda.
+      st.ini = semanal(h) ? fromDay(segunda(toDay(today())) + (ui.quebra ? 7 : 0)) : today();
+      st.visto = 0; save(); ui.quebra = null;
+    }
+    else if (act === "subir" || act === "descer") {
+      const h = byId[id], k = st.nivel + (act === "subir" ? 1 : -1);
+      if (h.niveis && k >= 0 && k < h.niveis.length) { st.nivel = k; st.nhist.push({ data: today(), nivel: k }); save(); }
+    }
+    else if (act.startsWith("rev-")) {
+      const h = byId[id], c = st.ciclo, fim = fimCiclo(c), m = medir(h, c, fim);
+      const k = act === "rev-subir" ? st.nivel + 1 : act === "rev-piso" ? st.nivel - 1 : st.nivel;
+      const decisao = { "rev-manter": "manteve", "rev-subir": "subiu", "rev-piso": "piso", "rev-soltar": "soltou" }[act];
+      st.chist.push({ ini: c.ini, fim: fromDay(fim), sem: c.sem, pct: m.pct, feitos: m.feitos, total: m.total, vezes: m.vezes, vezesOk: m.vezesOk, nivel: st.nivel, decisao });
+      if (h.niveis && k !== st.nivel && k >= 0 && k < h.niveis.length) { st.nivel = k; st.nhist.push({ data: today(), nivel: k }); }
+      if (act === "rev-soltar") { st.solto = today(); st.ciclo = null; }
+      else st.ciclo = { ini: fromDay(fim + 1), sem: c.sem };
+      save();
+    }
+    else if (act === "ciclo-comecar") {
+      const h = byId[id], sem = SEMANAS_CICLO;
+      let ini = document.getElementById("cini").value || today();
+      if (toDay(ini) > toDay(today())) ini = today();
+      if (semanal(h)) ini = fromDay(segunda(toDay(ini)));
+      st.ciclo = { ini, sem }; ui.ciclo = true; save();
+    }
+    else if (act === "ciclo-cancelar") { st.ciclo = null; ui.ciclo = true; save(); }
+    else if (act === "voltar") { st.solto = null; save(); }
+    else if (act === "fechar") ui.quebra = null;
+    else if (act === "visto") { st.visto = idxFor(byId[id], count(id)); save(); }
+    else if (act === "inc" || act === "dec") setCount(id, count(id) + (act === "inc" ? 1 : -1));
+    else if (act === "copiar") {
+      const txt = exportText();
+      const done = ok => { ui.copia = ok ? { msg: "Copiado. Cole num lugar seguro (uma nota, um e-mail para si mesmo)." } : { msg: "Não foi possível copiar sozinho. Selecione o texto abaixo e copie.", txt }; render(); };
+      if (navigator.clipboard) navigator.clipboard.writeText(txt).then(() => done(true), () => done(false)); else done(false);
+      return;
+    }
+    render();
+    const again = document.querySelector(`button[data-act="${act}"]`);
+    if (again) again.focus();
+  });
+  app.addEventListener("change", ev => {
+    if (ev.target.id !== "n") return;
+    const id = (location.hash.match(/^#\/h\/(\w+)/) || [])[1];
+    if (id) { setCount(id, ev.target.value); render(); }
+  });
+  app.addEventListener("toggle", ev => { if (ev.target.tagName === "DETAILS" && !ev.target.open && ui.copia) ui.copia = null; }, true);
+  window.addEventListener("hashchange", () => { ui = { confirmar: false, quebra: null, copia: null, ciclo: false }; render(); window.scrollTo(0, 0); });
+  // Ao voltar para a aba num outro dia, a contagem avança sozinha.
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) render(); });
+
+  render();
+})();
+</script>
+</body>
+</html>
